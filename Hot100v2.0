@@ -63,12 +63,17 @@ for(i in 1:ncol(m)){
 m[,7]<-m$lastweek-m$rank
 colnames(m)[7]<-'Trend'
 
+oneplane <- expand.grid(x = 0:100, y = -20:50)
+oneplane$z <- 0
+oneplane.m <- as.matrix(spread(oneplane, key = x, value = z)[, -1])
+
 p<- plot_ly(m,x=~rank,y=~weeks,z=~Trend,color=~peak,
             text=~paste("Artist: ",artist,'<br>Title: ',title,'<br>Current Rank: ',rank,'<br>Peak Rank: ',peak,
                         '<br>Weeks on the Chart: ',weeks,'<br>1-Week Trend: ',Trend),
             hoverinfo='text',title='Bilboard Top 100 Songs',
             colorscale='viridis') %>%
   add_markers() %>%
+  add_surface(y=-20:50,x=0:100,z=oneplane.m,opacity=.5,type='surface') %>%
   layout(showlegend=F,scene=list(xaxis=list(title='Current Rank',
                                             gridcolor='rgb(255,255,255)'),
                                  zaxis=list(title='1-Week-Trend',
