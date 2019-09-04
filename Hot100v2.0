@@ -72,14 +72,15 @@ p<- plot_ly(m,x=~rank,y=~weeks,z=~Trend,color=~peak,
                         '<br>Weeks on the Chart: ',weeks,'<br>1-Week Trend: ',Trend),
             hoverinfo='text',title='Bilboard Top 100 Songs',
             colorscale='viridis') %>%
-  add_markers() %>%
-  add_surface(y=-20:50,x=0:100,z=oneplane.m,opacity=.7,type='surface') %>%
-  layout(showlegend=F,scene=list(xaxis=list(title='Current Rank',
+  add_markers()  %>%
+  add_surface(y=0:50,x=0:100,z=oneplane.m,opacity=.7,type='surface',
+              hoverinfo="") %>%
+  layout(showlegend=T,scene=list(xaxis=list(title='Current Rank',
                                             gridcolor='rgb(255,255,255)'),
                                  zaxis=list(title='1-Week-Trend',
                                             gridcolor='rgb(230,200,230)'),
                                  yaxis=list(title='Weeks on the Chart',
                                             gridcolor='rgb(230,230,200)',
                                             ticklen = 2,
-                                            griwith = 1)))
+                                            griwith = 1))) 
 p
