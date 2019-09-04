@@ -73,7 +73,7 @@ p<- plot_ly(m,x=~rank,y=~weeks,z=~Trend,color=~peak,
             hoverinfo='text',title='Bilboard Top 100 Songs',
             colorscale='viridis') %>%
   add_markers() %>%
-  add_surface(y=-20:50,x=0:100,z=oneplane.m,opacity=.5,type='surface') %>%
+  add_surface(y=-20:50,x=0:100,z=oneplane.m,opacity=.7,type='surface') %>%
   layout(showlegend=F,scene=list(xaxis=list(title='Current Rank',
                                             gridcolor='rgb(255,255,255)'),
                                  zaxis=list(title='1-Week-Trend',
