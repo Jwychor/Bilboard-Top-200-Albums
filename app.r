@@ -35,6 +35,11 @@ server<- function(input,output,session){
     }
   })
   
+  week_of<- reactive({
+    week<- node_selector(".button--link") %>% as.character()
+    return(week)
+  })
+  
   music_df<- reactive({
     
     song_rank<- node_selector('.chart-element__rank__number') %>% as.numeric()
@@ -43,7 +48,7 @@ server<- function(input,output,session){
       .[c(3:length(.))]
     
     artist_name<- node_selector('.color--secondary') %>%
-      .[!grepl("^[0-9]$|^[0-9][0-9]$|^[0-9][0-9][0-9]$|\\n|[-]|^Steady$",.)]
+      .[!grepl("^[0-9]+$|\\n|^[-]$|^Steady$",.)]
     
     last_week_rank<- node_selector('.text--last') %>%
       .[c(F,T)] %>%
@@ -80,6 +85,7 @@ server<- function(input,output,session){
       selectInput("Xvar", "X-Variable",choices = NumColumns())
     )
   })
+  
   output$Yvars<- renderUI({
     list(
       selectInput("Yvar", "Y-Variable",choices = NumColumns())
@@ -87,6 +93,8 @@ server<- function(input,output,session){
   })
   
   ##Outputs
+  output$week_of<- renderText({week_of()})
+  
   output$MusicTable<- DT::renderDataTable({
     music_df2<- music_df()
     colnames(music_df2) <- paste0('<span style="color:',c(rep("white",ncol(music_df()))),'">',colnames(music_df()),'</span>')
@@ -122,29 +130,76 @@ server<- function(input,output,session){
 
 ####UI#####
 ###UI
+
 ui<- fluidPage(
   theme = shinytheme("superhero"),
-  tabsetPanel(
-    tabPanel("Table",
-             titlePanel("Chart"),
+  
+  tags$head(
+    tags$style(
+      HTML('
+           hr{
+      	border: 1px solid white;
+      }
+      
+      h1{
+      	font-size: 56px;
+      	font-weight: 700;
+      	text-align: center;
+      }
+      
+      table.table.dataTable tbody tr.active td {
+      	color: unset !important;
+      }
+      
+      label, th, thead, .paginate_button{
+      	color: white !important;
+      }
+      
+      select{
+      	color: black;
+      }
+      
+      .dataTables_wrapper{
+        min-height: 600px !important;
+      }
+      
+      .svg-container{
+        min-height: 400px !important;
+      }
+      '
+      )
+    )
+  ),
+  
+  headerPanel(
+    wellPanel(
+    list(HTML('<a href="https://github.com/jwychor"><img src="https://i.ibb.co/n3r8vLx/Logo.png" alt="Logo" border="0" style="height: 100px; width: 100px;" /></a>','Top Bilboard Data',
+              HTML(paste('<br /><h2>for the week of', textOutput('week_of'),'</h3>')),
+              HTML('<br /><h4><a href="https://github.com/Jwychor/Graphing-Top-Bilboard-Data">Source Code</a></h4>'))
+         ),
+    tags$hr()
+    )
+  ),
+  wellPanel(
              fluidRow(
                column(2,
                       radioButtons("Source",
-                                   "Source",
+                                   HTML("<h3>Source</h3>"),
                                    choices = list(
                                      "Hot 100",
                                      "Bilboard Top 200"
-                                   ))),
+                                   ))
+                      ),
                column(10,
                       div(DT::DTOutput(outputId = 'MusicTable'),
                           style = "font-size: 100%; width: 100%")
                ),
              )
     ),
-    tabPanel("Graph",
+    wellPanel(tags$style('min-height: 800px;'),
              fluidRow(
                column(9,
-                      titlePanel("Scatterplot"),
+                      titlePanel("Weekly Figures"),
                       plotlyOutput("MusicPlot")
                ),
                column(3,
@@ -152,8 +207,17 @@ ui<- fluidPage(
                       colourInput("DotColor","Dot Color","black"),
                       uiOutput("Xvars"),
                       uiOutput("Yvars")
-               )))
+               ))),
+    wellPanel(
+      headerPanel(
+        wellPanel("Sources")
+        ),
+      HTML('
+      <h3><a href="https://www.billboard.com/charts/hot-100">https://www.billboard.com/charts/hot-100</a>
+            <br />
+           <h3><a href="https://www.billboard.com/charts/billboard-200">https://www.billboard.com/charts/billboard-200</a>'
+           )
+    )
   )
-)
 
 shinyApp(ui, server)
