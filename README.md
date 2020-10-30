@@ -1,5 +1,7 @@
 # Graphing-Top-Bilboard-Data
-R scipt for creating a dashboard of top music of the week using shiny, plotly, tidyverse, and other related packages.
+
+
+A shiny dashboard for viewing the Hot-100/Bilboard-200 top music of the week using plotly, tidyverse, rvest, and other related packages.
 
 ## Link to live server
 A live version of the package can be found [here](https://jwychor.shinyapps.io/Graphing-Top-Bilboard-Data/).
